@@ -1,0 +1,10 @@
+{
+  "name": "Remix AcousticCipher",
+  "description": "Offline acoustic communication prototype transmitting and receiving FSK tones via physical speaker and microphone.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

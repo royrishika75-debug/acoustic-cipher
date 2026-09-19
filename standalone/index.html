@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AcousticCipher - Offline Acoustic Communication Engine</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Top Header -->
+    <header>
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h1>ACOUSTICCIPHER</h1>
+          <span class="badge">VERSION 1: SIGNAL ENGINE</span>
+        </div>
+        <div class="subtitle">OFFLINE ACOUSTIC COMMUNICATION • TRANSMITTER SPEAKER ➔ AIR ➔ RECEIVER MICROPHONE</div>
+      </div>
+
+      <div class="tabs">
+        <button id="tab-both" class="tab-btn active">DUAL BENCH</button>
+        <button id="tab-tx" class="tab-btn">TRANSMITTER</button>
+        <button id="tab-rx" class="tab-btn">RECEIVER</button>
+      </div>
+    </header>
+
+    <!-- Air Gap Notice -->
+    <div class="notice-bar">
+      <span>PHYSICAL AIR-GAP VERIFICATION: Zero network sockets, zero HTTP, zero WebRTC. Pure audio waves.</span>
+      <strong>100% ACOUSTIC TRANSMISSION</strong>
+    </div>
+
+    <!-- Main Dual Grid -->
+    <div class="grid-two">
+      <!-- 1. TRANSMITTER -->
+      <section id="card-transmitter" class="card">
+        <div class="card-title">ACOUSTICCIPHER TRANSMITTER</div>
+
+        <div style="display: flex; gap: 10px;">
+          <div class="status-box" style="flex: 1;">
+            <span class="diag-label">FREQUENCY 0</span>
+            <span class="status-val">18,000 Hz</span>
+            <span style="font-size: 0.75rem; color: var(--accent-cyan);">Symbol: 0</span>
+          </div>
+          <div class="status-box" style="flex: 1;">
+            <span class="diag-label">FREQUENCY 1</span>
+            <span class="status-val">19,000 Hz</span>
+            <span style="font-size: 0.75rem; color: var(--accent-sky);">Symbol: 1</span>
+          </div>
+        </div>
+
+        <div id="tx-status-box" class="status-box">
+          <div class="status-row">
+            <span class="diag-label">TRANSMITTER STATE:</span>
+            <span id="tx-status-text" class="status-val">IDLE</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">Emitting Frequency:</span>
+            <span id="tx-freq-text" class="status-val">--</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">Emitting Symbol:</span>
+            <span id="tx-symbol-text" class="status-symbol">--</span>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button id="btn-play-0" class="primary">[ PLAY 0 ] (18 kHz)</button>
+          <button id="btn-play-1" class="primary">[ PLAY 1 ] (19 kHz)</button>
+          <button id="btn-stop-tx" class="danger">[ STOP ]</button>
+        </div>
+      </section>
+
+      <!-- 2. RECEIVER -->
+      <section id="card-receiver" class="card">
+        <div class="card-title">ACOUSTICCIPHER RECEIVER</div>
+
+        <div class="btn-group">
+          <button id="btn-start-mic" class="primary">[ START MICROPHONE ]</button>
+          <button id="btn-stop-mic" class="danger">[ STOP MICROPHONE ]</button>
+        </div>
+
+        <div id="rx-status-box" class="status-box">
+          <div class="status-row">
+            <span class="diag-label">SIGNAL STATUS:</span>
+            <span id="rx-status-text" class="status-val" style="color: #64748b;">STANDBY</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">Detected Frequency:</span>
+            <span id="rx-freq-text" class="status-val">--</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">Detected Symbol:</span>
+            <span id="rx-symbol-text" class="status-symbol">NONE</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">Signal Quality:</span>
+            <span id="rx-quality-text" class="status-val">NONE</span>
+          </div>
+
+          <div style="margin-top: 6px;">
+            <div class="status-row" style="margin-bottom: 4px;">
+              <span class="diag-label">Signal Strength:</span>
+              <span id="rx-meter-text" class="diag-label" style="color: var(--accent-cyan); font-weight: 700;">0%</span>
+            </div>
+            <div class="meter-bar">
+              <div id="rx-meter-fill" class="meter-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <div class="status-box" style="flex: 1;">
+            <span class="diag-label">18 kHz Band Energy</span>
+            <span id="energy-0-val" class="status-val">--</span>
+          </div>
+          <div class="status-box" style="flex: 1;">
+            <span class="diag-label">19 kHz Band Energy</span>
+            <span id="energy-1-val" class="status-val">--</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 3. LIVE SPECTRUM -->
+    <section class="card">
+      <div class="status-row">
+        <div class="card-title" style="border: none; padding: 0;">LIVE FREQUENCY SPECTRUM (REAL FFT)</div>
+        <span class="diag-label" style="color: var(--accent-cyan);">16 kHz – 20.5 kHz Ultrasonic Window</span>
+      </div>
+      <canvas id="spectrum-canvas"></canvas>
+      <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-dim);">
+        <span>■ 18.0 kHz Target Window [0]</span>
+        <span>■ 19.0 kHz Target Window [1]</span>
+        <span>Dashed line: Detection Threshold (-65 dB)</span>
+      </div>
+    </section>
+
+    <!-- 4. DIAGNOSTICS & CALIBRATION -->
+    <div class="grid-two">
+      <section class="card">
+        <div class="card-title">TECHNICAL DIAGNOSTICS</div>
+
+        <div id="nyquist-warning" style="display: none; background: rgba(244,63,94,0.15); border: 1px solid var(--error-color); color: var(--error-color); padding: 8px; border-radius: 4px; font-size: 0.75rem;">
+          Selected frequency may not be reliably detectable at this sampling rate.
+        </div>
+
+        <div class="diag-grid">
+          <div class="diag-item">
+            <span class="diag-label">MICROPHONE</span>
+            <span id="diag-mic" class="diag-val">NOT CONNECTED</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">AUDIO CONTEXT</span>
+            <span id="diag-ctx" class="diag-val">STOPPED</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">SAMPLING RATE</span>
+            <span id="diag-srate" class="diag-val">--</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">FFT SIZE</span>
+            <span id="diag-fft" class="diag-val">4096</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">18 kHz ENERGY</span>
+            <span id="diag-e0" class="diag-val">--</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">19 kHz ENERGY</span>
+            <span id="diag-e1" class="diag-val">--</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">DETECTED SYMBOL</span>
+            <span id="diag-sym" class="diag-val">NONE</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">SIGNAL QUALITY</span>
+            <span id="diag-qual" class="diag-val">NONE</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="status-row" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+          <div class="card-title" style="border: none; padding: 0;">CALIBRATION & HARDWARE CHECK</div>
+          <button id="btn-calibrate" class="primary" style="padding: 4px 10px; font-size: 0.7rem;">[ CALIBRATE ]</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.8rem;">
+          <div class="status-row">
+            <span class="diag-label">18 kHz CHANNEL:</span>
+            <span id="calib-18k" class="diag-val">NOT TESTED</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">19 kHz CHANNEL:</span>
+            <span id="calib-19k" class="diag-val">NOT TESTED</span>
+          </div>
+          <div class="status-row">
+            <span class="diag-label">RECOMMENDED THRESHOLD:</span>
+            <span id="calib-rec-thresh" class="diag-val">--</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.72rem; color: var(--text-muted);">
+          Note: Low-cost laptop microphones may feature steep hardware low-pass filters (>16 kHz). Use calibration to detect ambient background noise floor.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
